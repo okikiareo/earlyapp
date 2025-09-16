@@ -1,75 +1,99 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import React from "react";
+import { Button, StyleSheet, TextInput, View } from "react-native";
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { ThemedText } from "@/components/ThemedText";
+import { useTheme } from "@react-navigation/native";
+import { SafeAreaView } from "react-native-safe-area-context";
+// import { Button } from '@react-navigation/elements';
+// import { View } from 'react-native-reanimated/lib/typescript/Animated';
+import ListItem from "../../components/ListItem/ListItem";
 
 export default function HomeScreen() {
+  const { colors } = useTheme();
+  const [text, onChangeText] = React.useState("Areo Okiki");
+  const [number, onChangeNumber] = React.useState("");
+  const [items, setItems] = React.useState<string[]>([]); // array of submitted texts
+
+  const displayFunction = () => {
+    if (text.trim() === "") return; // ignore empty input
+    setItems((prev) => [...prev, text]); // add new text to list
+    onChangeText(""); // clear input
+  };
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
+    <SafeAreaView style={{ flex: 1, alignItems: "center" }}>
+      <View style={styles.container}>
+        <ThemedText>First App Wow!</ThemedText>
+        <View style={styles.box}>
+          <TextInput
+            style={[
+              styles.input,
+              {
+                color: colors.text,
+                borderColor: colors.border,
+                backgroundColor: colors.background,
+              },
+            ]}
+            value={text}
+            onChangeText={onChangeText}
+          />
+          <View style={styles.btn}>
+            <Button title="Submit" onPress={displayFunction} />
+          </View>
+        </View>
+        <View style={styles.listContainer}>
+          {items.map((item, index) => (
+            <ListItem key={index} item={item} />
+          ))}
+        </View>
+        <View style={styles.phinput}>
+          <TextInput
+          style={[styles.input, { borderColor: colors.border }]}
+          onChangeText={onChangeNumber}
+          value={number}
+          keyboardType="numeric"
+          placeholder="+234 6556 667 54"
         />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+        </View>
+        
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  container: {
+    width: "80%",
+    alignItems: "center",
+    flex: 1,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  box: {
+    // flex: 1
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
+    margin: 10,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  input: {
+    height: 40,
+    width: "70%",
+    marginRight: 15,
+    borderWidth: 1,
+    padding: 10,
   },
+  btn: {
+    width: "25%",
+  },
+  listContainer: {
+    // marginTop: 5,
+    flexDirection: "column", // vertical layout
+    gap: 10, // space between items (RN 0.71+)
+    width: "100%",
+  },
+  phinput:{
+    marginTop: 20,
+    width: "100%"
+  }
+  // listItem: {
+  //   fontSize: 16,
+  // },
 });
